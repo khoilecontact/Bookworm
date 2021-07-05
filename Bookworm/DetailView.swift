@@ -49,6 +49,7 @@ struct DetailView_Previews: PreviewProvider {
     static let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
     
     static var previews: some View {
+        //create d test value to pass in 
         let book = Book(context: moc)
         book.title = "Text book"
         book.author = "KhoiLe"
