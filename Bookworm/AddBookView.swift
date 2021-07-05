@@ -16,6 +16,8 @@ struct AddBookView: View {
     @State private var genre = ""
     @State private var rating = 3
     @State private var review = ""
+    @State private var showingArlet = false
+    @State private var messageArlet = ""
     
     let genres = ["Fantasy", "Horror", "Kids", "Mystery", "Poetry", "Romance", "Thriller"]
     
@@ -45,25 +47,43 @@ struct AddBookView: View {
                 
                 Section {
                     Button("Save") {
-                        //using CORE DATA to save data
-                            //call core data
-                            let newBook = Book(context: self.moc)
-                            //assign value for data
-                            newBook.title = self.title
-                            newBook.author = self.author
-                            newBook.genre = self.genre
-                            newBook.rating = Int16(self.rating)
-                            newBook.review = self.review
-                        
-                            //save data to core data
-                            try? self.moc.save()
-                        
-                        //dismiss the sheet after saving 
-                        self.presentationMode.wrappedValue.dismiss()
+                        addBookValidate()
+                            if (self.showingArlet == false) {
+                            //using CORE DATA to save data
+                                //call core data
+                                let newBook = Book(context: self.moc)
+                                //assign value for data
+                                newBook.title = self.title
+                                newBook.author = self.author
+                                newBook.genre = self.genre
+                                newBook.rating = Int16(self.rating)
+                                newBook.review = self.review
+                            
+                                //save data to core data
+                                try? self.moc.save()
+                            
+                            //dismiss the sheet after saving
+                            self.presentationMode.wrappedValue.dismiss()
+                        }
                     }
                 }
             }
             .navigationBarTitle("Add Book")
+            .alert(isPresented: $showingArlet) {
+                Alert(title: Text("Oop!"), message: Text(messageArlet), dismissButton: .default(Text("OK")))
+            }
+        }
+    }
+    
+    func addBookValidate() {
+        if self.author.isEmpty {
+            self.showingArlet = true
+            self.messageArlet = "You have not entered author's name"
+        }
+        
+        if self.title.isEmpty {
+            self.showingArlet = true
+            self.messageArlet = "You have not inputted the title"
         }
     }
 }

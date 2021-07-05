@@ -19,7 +19,7 @@ struct DetailView: View {
             VStack {
                 ZStack(alignment: .bottomTrailing) {
                     //show image from Files
-                    Image(self.book.genre ?? "Fantasy")
+                    Image(self.book.genre ?? "unknown")
                         .frame(maxWidth: geo.size.width)
                     
                     //Book's genre
