@@ -10,7 +10,8 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
-    @FetchRequest(entity: Book.entity(), sortDescriptors: []) var books: FetchedResults<Book>
+    //FectchRequest to pull object out of core data
+    @FetchRequest(entity: Book.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Book.title, ascending: true), NSSortDescriptor(keyPath: \Book.author, ascending: true)]) var books: FetchedResults<Book>
     
     @State private var showingAddScreen = false
 
@@ -29,9 +30,10 @@ struct ContentView: View {
                         }
                     }
                 }
+                .onDelete(perform: deleteBooks)
             }
                 .navigationBarTitle("Bookworm")
-                .navigationBarItems(trailing: Button(action:  {
+                .navigationBarItems(leading: EditButton(),trailing: Button(action:  {
                     self.showingAddScreen.toggle()
                 }) {
                     Image(systemName: "plus") 
@@ -40,6 +42,18 @@ struct ContentView: View {
                     AddBookView().environment(\.managedObjectContext, self.moc)
                 }
         }
+    }
+    
+    func deleteBooks(at offsets: IndexSet) {
+        for offset in offsets {
+            //find the book in our fetch request
+            let book = books[offset]
+            
+            //delete it from the context
+            moc.delete(book)
+        }
+        
+        try? moc.save()
     }
 }
 struct ContentView_Previews: PreviewProvider {
